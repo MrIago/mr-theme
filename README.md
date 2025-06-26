@@ -1,53 +1,42 @@
-# 🎨 Mr-Theme
+# 🎨 Mr. Theme
 
-**Advanced theme system for React/Next.js - Faster than next-themes with automatic favicon management**
+Sistema de temas moderno com Zustand - Gerenciamento inteligente de tema, favicon automático e performance otimizada.
 
-[![npm version](https://badge.fury.io/js/mr-theme.svg)](https://badge.fury.io/js/mr-theme)
-[![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
-[![Zustand](https://img.shields.io/badge/-Zustand-FF6B6B?logo=zustand&logoColor=white)](https://zustand-demo.pmnd.rs/)
+## ✨ Características
 
-> Created by **Mr (mister)** - A high-performance theme system that's faster and more feature-rich than next-themes.
+- 🚀 **Performance otimizada** com Zustand (sem Context API)
+- 🎯 **Favicon automático** baseado no tema
+- 💾 **Persistência** automática no localStorage
+- 🌙 **Detecção do tema do sistema** 
+- ⚡ **Zero flash** durante hidratação
+- 🎨 **Flexível** - funciona com qualquer UI library
+- 📱 **SSR/SSG friendly** com Next.js
+- 🔧 **TypeScript** nativo
+- 📦 **Tiny bundle** - apenas 2kb gzipped
 
-## ✨ Features
-
-- 🚀 **Performance First** - Selective re-renders with Zustand
-- 🎯 **Automatic Favicon** - Changes favicon based on theme
-- 🐛 **DevTools Integration** - Debug theme changes in browser
-- 📦 **Smaller Bundle** - ~1.8kb vs next-themes ~3.2kb
-- 🌙 **System Theme Detection** - Respects OS preferences
-- 💾 **Persistent Storage** - Saves theme preference
-- 🔥 **SSR Safe** - No hydration mismatches
-- 🎨 **Zero Config** - Works out of the box
-
-## 🚀 Quick Start
-
-### Installation
+## 📦 Instalação
 
 ```bash
-npm install mr-theme
-# or
-yarn add mr-theme
-# or
-pnpm add mr-theme
+npm install mr-theme zustand
+# ou
+yarn add mr-theme zustand
+# ou
+pnpm add mr-theme zustand
 ```
 
-### Basic Setup
+## 🚀 Uso Básico
+
+### 1. Configurar o Provider
 
 ```tsx
-// app/layout.tsx
+// app/layout.tsx (Next.js)
 import { ThemeProvider } from 'mr-theme'
 
 export default function RootLayout({ children }) {
   return (
-    <html>
+    <html lang="pt" suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider>
           {children}
         </ThemeProvider>
       </body>
@@ -56,284 +45,269 @@ export default function RootLayout({ children }) {
 }
 ```
 
+### 2. Usar o tema nos componentes
+
 ```tsx
-// components/theme-toggle.tsx
-import { useTheme, ThemeToggle } from 'mr-theme'
+import { useTheme } from 'mr-theme'
 
-// Use the built-in component
-export function MyThemeToggle() {
-  return <ThemeToggle />
-}
+function MyComponent() {
+  const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme()
 
-// Or create your own
-export function CustomThemeToggle() {
-  const { theme, resolvedTheme, toggleTheme } = useTheme()
-  
   return (
-    <button onClick={toggleTheme}>
-      {resolvedTheme === 'dark' ? '🌙' : '☀️'}
-      Current: {theme}
-    </button>
+    <div>
+      <p>Tema atual: {resolvedTheme}</p>
+      <button onClick={toggleTheme}>
+        Alternar tema
+      </button>
+    </div>
   )
 }
 ```
 
-## 📊 Performance Comparison
+### 3. Componente de toggle pronto
 
-| Feature | next-themes | mr-theme | Improvement |
-|---------|-------------|----------|-------------|
-| Bundle Size | ~3.2kb | ~1.8kb | **44% smaller** |
-| Re-renders | Multiple | Selective | **Much faster** |
-| Favicon Management | Manual | Automatic | **Built-in** |
-| DevTools | ❌ | ✅ | **Debug ready** |
-| Type Safety | Partial | Complete | **100% typed** |
+```tsx
+import { ThemeToggle } from 'mr-theme'
 
-## 🏗️ Architecture
+// Básico
+<ThemeToggle />
 
-### Zustand Store
+// Com shadcn/ui
+import { Button } from '@/components/ui/button'
+<ThemeToggle as={Button} variant="outline" size="icon" />
 
-```typescript
-interface ThemeStore {
-  theme: 'light' | 'dark' | 'system'
-  resolvedTheme: 'light' | 'dark'
-  isLoading: boolean
-  setTheme: (theme: Theme) => void
-  toggleTheme: () => void
-  updateFavicon: (theme: ResolvedTheme) => void
-}
+// Customizado
+<ThemeToggle
+  icons={{ light: <SunIcon />, dark: <MoonIcon /> }}
+  showLabel
+/>
 ```
 
-### Automatic Favicon Management
+## ⚙️ Configuração Avançada
 
-```typescript
-// Automatically updates favicon based on theme
-// /favicon.ico (light theme)
-// /favicon-dark.ico (dark theme)
+### Provider com opções
+
+```tsx
+<ThemeProvider
+  defaultTheme="system"
+  storageKey="meu-app-tema"
+  enableSystem={true}
+  disableTransitionOnChange={false}
+  favicons={{
+    light: "/favicon-light.ico",
+    dark: "/favicon-dark.ico"
+  }}
+>
+  {children}
+</ThemeProvider>
+```
+
+### Store customizado
+
+```tsx
+import { createThemeStore } from 'mr-theme/store'
+
+const useCustomThemeStore = createThemeStore({
+  storageKey: 'empresa-tema',
+  defaultTheme: 'dark',
+  favicons: {
+    light: '/icons/light.png',
+    dark: '/icons/dark.png'
+  }
+})
+```
+
+## 🎨 Integração com UI Libraries
+
+### shadcn/ui
+
+```tsx
+import { Button } from '@/components/ui/button'
+import { Moon, Sun } from 'lucide-react'
+import { ThemeToggle } from 'mr-theme'
+
+<ThemeToggle
+  as={Button}
+  variant="outline"
+  size="icon"
+  icons={{
+    light: <Sun className="h-4 w-4" />,
+    dark: <Moon className="h-4 w-4" />
+  }}
+/>
+```
+
+### Material-UI
+
+```tsx
+import { IconButton } from '@mui/material'
+import { Brightness4, Brightness7 } from '@mui/icons-material'
+
+<ThemeToggle
+  as={IconButton}
+  icons={{
+    light: <Brightness4 />,
+    dark: <Brightness7 />
+  }}
+/>
+```
+
+### Chakra UI
+
+```tsx
+import { IconButton } from '@chakra-ui/react'
+import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+
+<ThemeToggle
+  as={IconButton}
+  variant="ghost"
+  icons={{
+    light: <SunIcon />,
+    dark: <MoonIcon />
+  }}
+/>
 ```
 
 ## 📚 API Reference
 
-### Hook
-
-```typescript
-const {
-  theme,           // 'light' | 'dark' | 'system'
-  resolvedTheme,   // 'light' | 'dark' (resolved system theme)
-  isLoading,       // boolean
-  setTheme,        // (theme: Theme) => void
-  toggleTheme      // () => void
-} = useTheme()
-```
-
-### Components
+### ThemeProvider Props
 
 ```tsx
-// Provider
-<ThemeProvider
-  attribute="class"              // CSS attribute to use
-  defaultTheme="system"          // Default theme
-  enableSystem={true}            // Enable system theme detection
-  disableTransitionOnChange={false} // Disable transitions during theme change
->
-  {children}
-</ThemeProvider>
-
-// Toggle Button
-<ThemeToggle />
-```
-
-### Store (Advanced)
-
-```typescript
-import { useThemeStore } from 'mr-theme'
-
-// Direct store access for advanced use cases
-const store = useThemeStore()
-```
-
-## 🎯 Examples
-
-### Custom Theme Toggle
-
-```tsx
-import { useTheme } from 'mr-theme'
-import { Sun, Moon, Monitor } from 'lucide-react'
-
-export function AdvancedThemeToggle() {
-  const { theme, setTheme } = useTheme()
-
-  return (
-    <div>
-      <button 
-        onClick={() => setTheme('light')}
-        className={theme === 'light' ? 'active' : ''}
-      >
-        <Sun /> Light
-      </button>
-      
-      <button 
-        onClick={() => setTheme('dark')}
-        className={theme === 'dark' ? 'active' : ''}
-      >
-        <Moon /> Dark
-      </button>
-      
-      <button 
-        onClick={() => setTheme('system')}
-        className={theme === 'system' ? 'active' : ''}
-      >
-        <Monitor /> System
-      </button>
-    </div>
-  )
-}
-```
-
-### Theme-aware Component
-
-```tsx
-import { useTheme } from 'mr-theme'
-
-export function ThemedComponent() {
-  const { resolvedTheme } = useTheme()
-  
-  return (
-    <div className={`component ${resolvedTheme}`}>
-      <h1>Current theme: {resolvedTheme}</h1>
-      {resolvedTheme === 'dark' ? (
-        <DarkModeContent />
-      ) : (
-        <LightModeContent />
-      )}
-    </div>
-  )
-}
-```
-
-### Favicon Setup
-
-Place these files in your `public` folder:
-
-```
-public/
-├── favicon.ico      (light theme)
-└── favicon-dark.ico (dark theme)
-```
-
-The library will automatically switch between them!
-
-## 🔧 Configuration
-
-### CSS Setup (Tailwind)
-
-```css
-/* globals.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Theme variables */
-:root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-}
-
-.dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-}
-```
-
-### Next.js Configuration
-
-```javascript
-// next.config.js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
-}
-
-module.exports = nextConfig
-```
-
-## 🎨 Customization
-
-### Custom Favicon Logic
-
-```typescript
-import { useThemeStore } from 'mr-theme'
-
-// Override favicon behavior
-const store = useThemeStore()
-
-store.updateFavicon = (theme) => {
-  const favicon = document.querySelector('link[rel="icon"]')
-  if (favicon) {
-    favicon.href = theme === 'dark' 
-      ? '/custom-dark-favicon.ico'
-      : '/custom-light-favicon.ico'
+interface ThemeProviderProps {
+  children: React.ReactNode
+  attribute?: string // 'class' (padrão)
+  defaultTheme?: 'light' | 'dark' | 'system' // 'system'
+  enableSystem?: boolean // true
+  disableTransitionOnChange?: boolean // false
+  storageKey?: string // 'mr-theme'
+  favicons?: {
+    light: string // '/favicon.ico'
+    dark: string  // '/favicon-dark.ico'
   }
 }
 ```
 
-### Integration with CSS-in-JS
+### useTheme Hook
 
 ```tsx
-import { useTheme } from 'mr-theme'
-import styled from 'styled-components'
+const {
+  theme,         // 'light' | 'dark' | 'system'
+  resolvedTheme, // 'light' | 'dark'
+  isLoading,     // boolean
+  setTheme,      // (theme: Theme) => void
+  toggleTheme    // () => void
+} = useTheme()
+```
 
-const ThemedDiv = styled.div`
-  background: ${props => props.theme === 'dark' ? '#000' : '#fff'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#000'};
-`
+### ThemeToggle Props
 
-export function StyledComponent() {
-  const { resolvedTheme } = useTheme()
-  
-  return (
-    <ThemedDiv theme={resolvedTheme}>
-      Styled with theme!
-    </ThemedDiv>
-  )
+```tsx
+interface ThemeToggleProps {
+  as?: React.ComponentType<any> // Componente customizado
+  icons?: {
+    light: React.ReactNode
+    dark: React.ReactNode
+  }
+  labels?: {
+    light: string
+    dark: string
+  }
+  showIcon?: boolean // true
+  showLabel?: boolean // false
+  [key: string]: any // Props extras para o componente
 }
 ```
 
-## 🔄 Migration from next-themes
+## 🎯 Casos de Uso
 
-### Before (next-themes)
-
-```tsx
-import { useTheme } from 'next-themes'
-
-const { theme, setTheme, systemTheme } = useTheme()
-const currentTheme = theme === 'system' ? systemTheme : theme
-```
-
-### After (mr-theme)
+### Acesso direto ao store
 
 ```tsx
-import { useTheme } from 'mr-theme'
+import { useThemeStore } from 'mr-theme'
 
-const { theme, resolvedTheme, setTheme } = useTheme()
-// resolvedTheme already handles system theme resolution
+function AdvancedComponent() {
+  const { theme, setTheme, resolvedTheme } = useThemeStore()
+  
+  // Lógica customizada...
+}
 ```
 
-## 🤝 Contributing
+### Múltiplos stores
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
+```tsx
+import { createThemeStore } from 'mr-theme/store'
 
-## 📄 License
+// Store para tema principal
+const useMainTheme = createThemeStore({
+  storageKey: 'main-theme'
+})
 
-MIT © [Mr (mister)](https://github.com/MrIago)
+// Store para tema do dashboard
+const useDashboardTheme = createThemeStore({
+  storageKey: 'dashboard-theme',
+  defaultTheme: 'dark'
+})
+```
 
-## 🙏 Acknowledgments
+### Favicon personalizado
 
-- next-themes for inspiration
-- Zustand team for the amazing state management
-- React team for the excellent hooks API
+```tsx
+<ThemeProvider
+  favicons={{
+    light: "/icons/light-logo.svg",
+    dark: "/icons/dark-logo.svg"
+  }}
+>
+  {children}
+</ThemeProvider>
+```
+
+## 🔧 CSS Setup
+
+Adicione classes CSS para os temas:
+
+```css
+/* globals.css */
+.light {
+  --background: 255 255 255;
+  --foreground: 0 0 0;
+}
+
+.dark {
+  --background: 0 0 0;
+  --foreground: 255 255 255;
+}
+
+/* ou com CSS variables nativas */
+:root.light {
+  color-scheme: light;
+  --bg: white;
+  --text: black;
+}
+
+:root.dark {
+  color-scheme: dark;
+  --bg: black;
+  --text: white;
+}
+```
+
+## 🚀 Performance
+
+- **Bundle size**: ~2kb gzipped
+- **Zero runtime overhead** com Zustand
+- **No Context re-renders**
+- **SSR optimizado**
+- **Favicon cache-bust** automático
+
+## 🤝 Contribuição
+
+Contribuições são bem-vindas! Por favor, leia nosso guia de contribuição.
+
+## 📄 Licença
+
+MIT © Mr. Theme
 
 ---
 
-**Made with ❤️ by Mr (mister)** 
+**Feito com ❤️ para a comunidade React** 

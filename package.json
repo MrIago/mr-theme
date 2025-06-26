@@ -1,44 +1,57 @@
 {
     "name": "mr-theme",
     "version": "1.0.0",
-    "description": "🎨 Advanced theme system for React/Next.js - Faster than next-themes with automatic favicon management",
-    "main": "dist/index.js",
-    "module": "dist/index.esm.js",
-    "types": "dist/index.d.ts",
-    "files": [
-        "dist",
-        "README.md"
-    ],
-    "scripts": {
-        "build": "rollup -c",
-        "dev": "rollup -c -w",
-        "test": "jest",
-        "lint": "eslint src --ext .ts,.tsx",
-        "typecheck": "tsc --noEmit",
-        "prepublishOnly": "npm run build"
-    },
+    "description": "🎨 Sistema de temas moderno com Zustand - Gerenciamento inteligente de tema, favicon automático e performance otimizada",
     "keywords": [
-        "react",
-        "nextjs",
         "theme",
         "dark-mode",
         "light-mode",
         "zustand",
-        "favicon",
-        "ssr",
+        "react",
+        "nextjs",
         "typescript",
-        "performance"
+        "favicon",
+        "system-theme"
     ],
-    "author": "Mr (mister) <iagoltoledo@gmail.com>",
+    "author": "Mr. Theme",
     "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/MrIago/mr-theme"
+    "type": "module",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        },
+        "./store": {
+            "types": "./dist/store.d.ts",
+            "import": "./dist/store.js",
+            "require": "./dist/store.cjs"
+        },
+        "./provider": {
+            "types": "./dist/provider.d.ts",
+            "import": "./dist/provider.js",
+            "require": "./dist/provider.cjs"
+        },
+        "./toggle": {
+            "types": "./dist/toggle.d.ts",
+            "import": "./dist/toggle.js",
+            "require": "./dist/toggle.cjs"
+        }
     },
-    "bugs": {
-        "url": "https://github.com/MrIago/mr-theme/issues"
+    "files": [
+        "dist/**/*",
+        "README.md"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint src --ext .ts,.tsx",
+        "clean": "rm -rf dist"
     },
-    "homepage": "https://github.com/MrIago/mr-theme#readme",
     "peerDependencies": {
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0",
@@ -47,18 +60,15 @@
     "devDependencies": {
         "@types/react": "^18.0.0",
         "@types/react-dom": "^18.0.0",
-        "@types/node": "^20.0.0",
-        "@rollup/plugin-commonjs": "^25.0.0",
-        "@rollup/plugin-node-resolve": "^15.0.0",
-        "@rollup/plugin-typescript": "^11.0.0",
-        "rollup": "^4.0.0",
-        "rollup-plugin-dts": "^6.0.0",
-        "rollup-plugin-peer-deps-external": "^2.2.4",
         "typescript": "^5.0.0",
-        "eslint": "^8.0.0",
-        "jest": "^29.0.0"
+        "tsup": "^8.0.0"
     },
-    "dependencies": {
-        "lucide-react": "^0.400.0"
-    }
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/your-username/mr-theme.git"
+    },
+    "bugs": {
+        "url": "https://github.com/your-username/mr-theme/issues"
+    },
+    "homepage": "https://github.com/your-username/mr-theme#readme"
 }
