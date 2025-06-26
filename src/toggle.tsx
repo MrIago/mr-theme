@@ -5,147 +5,61 @@ import { useTheme } from './provider'
 
 export interface ThemeToggleProps {
     /**
-     * Componente customizado para renderizar
-     * Recebe props: onClick, title, children, disabled
+     * Conteúdo do botão (ícones, texto, etc.)
      */
-    as?: React.ComponentType<{
-        onClick: () => void
-        title: string
-        children: React.ReactNode
-        disabled?: boolean
-        [key: string]: any
-    }>
+    children: React.ReactNode
 
     /**
-     * Props adicionais para o componente
+     * Props adicionais para o botão
      */
     [key: string]: any
-
-    /**
-     * Ícones customizados
-     */
-    icons?: {
-        light: React.ReactNode
-        dark: React.ReactNode
-    }
-
-    /**
-     * Labels customizados
-     */
-    labels?: {
-        light: string
-        dark: string
-    }
-
-    /**
-     * Mostrar apenas ícone ou apenas texto
-     */
-    showIcon?: boolean
-    showLabel?: boolean
 }
-
-/**
- * Componente padrão para botão simples
- */
-const DefaultButton = ({ onClick, title, children, disabled, ...props }: any) => (
-    <button
-        onClick={onClick}
-        title={title}
-        disabled={disabled}
-        style={{
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            padding: '8px',
-            background: 'transparent',
-            cursor: disabled ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-        }}
-        {...props}
-    >
-        {children}
-    </button>
-)
 
 /**
  * Botão para alternar tema
  * 
- * Componente flexível que permite customização completa.
- * Funciona com qualquer biblioteca de UI (shadcn, MUI, Chakra, etc).
+ * Componente simples que envolve children e escuta clicks para alternar o tema.
+ * O estilo e conteúdo do botão são completamente definidos pelo usuário via children.
  * 
  * @example
  * ```tsx
- * // Básico
- * <ThemeToggle />
+ * // Com botão customizado
+ * <ThemeToggle>
+ *   <button className="meu-botao">
+ *     {theme === 'light' ? '🌙' : '☀️'}
+ *   </button>
+ * </ThemeToggle>
  * 
- * // Com shadcn/ui
- * <ThemeToggle as={Button} variant="outline" size="icon" />
+ * // Com componente de UI library
+ * <ThemeToggle>
+ *   <Button variant="outline" size="icon">
+ *     <SunMoon className="h-4 w-4" />
+ *   </Button>
+ * </ThemeToggle>
  * 
- * // Customizado
- * <ThemeToggle
- *   icons={{
- *     light: <SunIcon />,
- *     dark: <MoonIcon />
- *   }}
- *   labels={{
- *     light: "Modo Claro",
- *     dark: "Modo Escuro"
- *   }}
- *   showLabel
- * />
+ * // Simples
+ * <ThemeToggle>
+ *   <span>🌙</span>
+ * </ThemeToggle>
  * ```
  */
-export function ThemeToggle({
-    as: Component = DefaultButton,
-    icons = {
-        light: '☀️',
-        dark: '🌙'
-    },
-    labels = {
-        light: 'Tema Claro',
-        dark: 'Tema Escuro'
-    },
-    showIcon = true,
-    showLabel = false,
-    ...props
-}: ThemeToggleProps) {
-    const { resolvedTheme, toggleTheme, isLoading } = useTheme()
+export function ThemeToggle({ children, ...props }: ThemeToggleProps) {
+    const { toggleTheme, isLoading } = useTheme()
 
-    const currentIcon = resolvedTheme === 'light' ? icons.dark : icons.light
-    const currentLabel = resolvedTheme === 'light' ? labels.dark : labels.light
-
-    const renderContent = () => (
-        <>
-            {showIcon && <span>{currentIcon}</span>}
-            {showLabel && <span>{currentLabel}</span>}
-            {!showIcon && !showLabel && <span>{currentIcon}</span>}
-        </>
-    )
-
-    // Evita hidratação mismatch mostrando um placeholder até carregar
-    if (isLoading) {
-        return (
-            <Component
-                onClick={() => { }}
-                title="Carregando tema..."
-                disabled
-                {...props}
-            >
-                {showIcon && <span>{icons.light}</span>}
-                {showLabel && <span>Carregando...</span>}
-                {!showIcon && !showLabel && <span>{icons.light}</span>}
-            </Component>
-        )
+    const handleClick = (e: React.MouseEvent) => {
+        e.preventDefault()
+        if (!isLoading) {
+            toggleTheme()
+        }
     }
 
     return (
-        <Component
-            onClick={toggleTheme}
-            title={currentLabel}
+        <div
+            onClick={handleClick}
+            style={{ cursor: isLoading ? 'not-allowed' : 'pointer' }}
             {...props}
         >
-            {renderContent()}
-        </Component>
+            {children}
+        </div>
     )
 } 
